@@ -13,11 +13,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -34,9 +37,6 @@ import models.Pedido;
  */
 public class InicioController implements Initializable {
 
-
-    @FXML
-    private ChoiceBox<String> selector;
     @FXML
     private ImageView btnAñadir;
     @FXML
@@ -53,6 +53,10 @@ public class InicioController implements Initializable {
     private TableColumn<Pedido, Date> colFecha;
     @FXML
     private TableColumn<Pedido, String> colEstado;
+    @FXML
+    private Button btnTodo;
+    @FXML
+    private Button btnPendientes;
     /**
      * Initializes the controller class.
      */
@@ -60,35 +64,7 @@ public class InicioController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         añadirHandlers();
-        
-        selector.getItems().addAll("Todo", "Pendiente");
-        selector.getSelectionModel().selectFirst();
-        
         actualizar();
-        
-//        Carta c1 = new Carta();
-//        c1.setNombre("Bollycaos");
-//        c1.setPrecio(2.0);
-//        Carta c2 = new Carta();
-//        c2.setNombre("Kebab");
-//        c2.setPrecio(5.0);
-//        Carta c3 = new Carta();
-//        c3.setNombre("Maguera");
-//        c3.setPrecio(10.0);
-//        Carta c4 = new Carta();
-//        c4.setNombre("Ferrari");
-//        c4.setPrecio(1000000.0);
-//        Carta c5 = new Carta();
-//        c5.setNombre("Pisito en Miami");
-//        c5.setPrecio(5000.0);
-//        
-//        em.getTransaction().begin();
-//        em.persist(c1);
-//        em.persist(c2);
-//        em.persist(c3);
-//        em.persist(c4);
-//        em.persist(c5);
-//        em.getTransaction().commit();
         
     }
     
@@ -128,6 +104,27 @@ public class InicioController implements Initializable {
             }
         });
         
+        
+        tabla.setRowFactory( tv -> {
+            TableRow<Pedido> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    Pedido pedidoSeleccionado = tabla.getSelectionModel().getSelectedItem();
+                
+                    EntityManager em = EntityManagerFactory.getEmfp().createEntityManager();
+
+                    Pedido p = em.find(Pedido.class, pedidoSeleccionado.getId());
+
+                    em.getTransaction().begin();
+                    p.setEstado("RECOGIDO");
+                    em.getTransaction().commit();
+
+                    actualizar();
+                }
+            });
+            return row ;
+        });
+        
     }
     
     private void actualizar() {
@@ -135,6 +132,34 @@ public class InicioController implements Initializable {
         EntityManager em = EntityManagerFactory.getEmfp().createEntityManager();
         
         TypedQuery<models.Pedido> q = em.createQuery("SELECT p FROM Pedido p", models.Pedido.class);
+        var resultado = q.getResultList();
+        
+        ObservableList<Pedido> contenido = FXCollections.observableArrayList();
+        tabla.setItems(contenido);
+
+        colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        colID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        
+        contenido.addAll(resultado);
+        
+    }
+
+    @FXML
+    private void todo(ActionEvent event) {
+        
+        actualizar();
+        
+    }
+
+    @FXML
+    private void pendientes(ActionEvent event) {
+        
+        EntityManager em = EntityManagerFactory.getEmfp().createEntityManager();
+        
+        TypedQuery<models.Pedido> q = em.createQuery("SELECT p FROM Pedido p WHERE estado = 'SIN ENTREGAR'", models.Pedido.class);
         var resultado = q.getResultList();
         
         ObservableList<Pedido> contenido = FXCollections.observableArrayList();

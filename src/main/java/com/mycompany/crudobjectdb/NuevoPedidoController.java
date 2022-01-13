@@ -86,7 +86,10 @@ public class NuevoPedidoController implements Initializable {
         p.setFecha(fecha);
         p.setNombre(txtNombre.getText());
         p.setPrecio(productoSeleccionado.getPrecio());
-        p.setProducto_id(productoSeleccionado.getId());
+        
+        EntityManager emc = EntityManagerFactory.getEmfc().createEntityManager();
+        Carta c = emc.find(Carta.class, productoSeleccionado.getId());
+        p.setProducto(c);
         
         em.getTransaction().begin();
         em.persist(p);
