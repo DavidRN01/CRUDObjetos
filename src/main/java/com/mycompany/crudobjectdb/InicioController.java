@@ -5,11 +5,15 @@
  */
 package com.mycompany.crudobjectdb;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -17,6 +21,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
@@ -54,10 +59,12 @@ public class InicioController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        EntityManager em = EntityManagerFactory.getEmfp().createEntityManager();
+        añadirHandlers();
         
-        TypedQuery<models.Pedido> q = em.createQuery("SELECT p FROM Pedido p", models.Pedido.class);
-        var resultado = q.getResultList();
+        selector.getItems().addAll("Todo", "Pendiente");
+        selector.getSelectionModel().selectFirst();
+        
+        actualizar();
         
 //        Carta c1 = new Carta();
 //        c1.setNombre("Bollycaos");
@@ -82,25 +89,54 @@ public class InicioController implements Initializable {
 //        em.persist(c4);
 //        em.persist(c5);
 //        em.getTransaction().commit();
-//        
-//        Pedido p = new Pedido();
-//        p.setEstado("SIN ENTREGAR");
-//        java.util.Date ahora = new java.util.Date();
-//        java.sql.Date fecha = new java.sql.Date(ahora.getTime());
-//        p.setFecha(fecha);
-//        p.setNombre("Jackson Aceituno");
-//        p.setPrecio(2.0);
-//        p.setProducto_id(1L);
-//
-//        em.getTransaction().begin();
-//        em.persist(p);
-//        em.getTransaction().commit();
-//
-//        TypedQuery<models.Carta> q = em.createQuery("SELECT p FROM Pedido p", models.Carta.class);
-//        var resultado = q.getResultList();
-//        
-//        System.out.println(resultado);
+        
+    }
+    
+    private void añadirHandlers() {
 
+        btnEliminar.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                
+                Pedido pedidoSeleccionado = tabla.getSelectionModel().getSelectedItem();
+                
+                EntityManager em = EntityManagerFactory.getEmfp().createEntityManager();
+                
+                Pedido p = em.find(Pedido.class, pedidoSeleccionado.getId());
+
+                em.getTransaction().begin();
+                em.remove(p);
+                em.getTransaction().commit();
+                
+                actualizar();
+                
+            }
+        });
+        
+        btnAñadir.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                
+                try {
+                    App.setRoot("nuevoPedido");
+                } catch (IOException ex) {
+                    Logger.getLogger(InicioController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        
+    }
+    
+    private void actualizar() {
+        
+        EntityManager em = EntityManagerFactory.getEmfp().createEntityManager();
+        
+        TypedQuery<models.Pedido> q = em.createQuery("SELECT p FROM Pedido p", models.Pedido.class);
+        var resultado = q.getResultList();
+        
         ObservableList<Pedido> contenido = FXCollections.observableArrayList();
         tabla.setItems(contenido);
 
@@ -112,6 +148,6 @@ public class InicioController implements Initializable {
         
         contenido.addAll(resultado);
         
-    }    
+    }
     
 }

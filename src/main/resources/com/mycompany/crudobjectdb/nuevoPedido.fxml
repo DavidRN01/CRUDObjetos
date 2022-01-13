@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.crudobjectdb.NuevoPedidoController">
    <center>
       <TableView fx:id="tabla" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -51,7 +50,7 @@
             </FlowPane>
          </center>
          <right>
-            <Button fx:id="btnAceptar" mnemonicParsing="false" text="Aceptar" BorderPane.alignment="CENTER">
+            <Button fx:id="btnAceptar" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </BorderPane.margin>

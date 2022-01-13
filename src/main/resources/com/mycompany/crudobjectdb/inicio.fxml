@@ -5,11 +5,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
-
 
 <BorderPane prefHeight="476.0" prefWidth="762.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.crudobjectdb.InicioController">
    <center>
@@ -35,6 +35,9 @@
                      <FlowPane.margin>
                         <Insets right="10.0" />
                      </FlowPane.margin>
+                     <image>
+                        <Image url="@../../../imagenes/logo.png" />
+                     </image>
                   </ImageView>
                   <Label text="Mostrando: " />
                   <ChoiceBox fx:id="selector" prefWidth="150.0" />
@@ -59,11 +62,17 @@
                      <FlowPane.margin>
                         <Insets top="10.0" />
                      </FlowPane.margin>
+                     <image>
+                        <Image url="@../../../imagenes/anadir.png" />
+                     </image>
                   </ImageView>
                   <ImageView fx:id="btnEliminar" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <FlowPane.margin>
                         <Insets top="10.0" />
                      </FlowPane.margin>
+                     <image>
+                        <Image url="@../../../imagenes/eliminar.png" />
+                     </image>
                   </ImageView>
                </children>
             </FlowPane>
