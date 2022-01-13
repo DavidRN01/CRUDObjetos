@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -26,6 +28,9 @@ public class Pedido implements Serializable {
     private double precio;
     private Date fecha;
     private String estado;
+    
+    @ManyToOne
+    @JoinColumn(name="carta_id")
     private Long producto_id;
     
     public Pedido() {

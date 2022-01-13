@@ -32,5 +32,13 @@ public class EntityManagerFactory {
             System.out.println("Error al iniciar EntityManagerFactory");
         }
     }
+
+    public static javax.persistence.EntityManagerFactory getEmfp() {
+        return emfp;
+    }
+
+    public static javax.persistence.EntityManagerFactory getEmfc() {
+        return emfc;
+    }
     
 }
